@@ -119,4 +119,5 @@ public class MazeGenerator : MonoBehaviour
             return;
         }
     }
+
 }
