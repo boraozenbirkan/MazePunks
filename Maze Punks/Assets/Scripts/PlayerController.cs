@@ -15,12 +15,15 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D rb;
     CinemachineVirtualCamera cam;
     PhotonView photonView;
+    Manager manager;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        cam = FindAnyObjectByType<CinemachineVirtualCamera>();
         photonView = GetComponent<PhotonView>();
+
+        cam = FindAnyObjectByType<CinemachineVirtualCamera>();
+        manager = FindAnyObjectByType<Manager>();
     }
 
     private void Start()
@@ -38,7 +41,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!photonView.IsMine) return; // Don't run if it's not mine.
+        // Don't run if it's not mine OR game is not started yet!
+        if (!photonView.IsMine || !manager.gameStarted) return; 
 
         // Get input for horizontal and vertical movement
         float horizontalInput = Input.GetAxis("Horizontal");

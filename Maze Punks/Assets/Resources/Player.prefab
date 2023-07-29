@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1737876375453194292}
   - component: {fileID: 1737876375453194314}
   - component: {fileID: 1737876375453194293}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Name Space
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: -2142689052851084884}
   - component: {fileID: 5951236030953354565}
   - component: {fileID: 4886469281183042091}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -341,7 +341,7 @@ GameObject:
   - component: {fileID: 1737876376526113370}
   - component: {fileID: 1737876376526113349}
   - component: {fileID: 1737876376526113348}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -441,7 +441,7 @@ GameObject:
   - component: {fileID: 1737876376814998330}
   - component: {fileID: 1737876376814998328}
   - component: {fileID: 1737876376814998331}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Nickname
   m_TagString: Untagged
   m_Icon: {fileID: 0}

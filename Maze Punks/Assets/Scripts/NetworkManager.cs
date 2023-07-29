@@ -85,8 +85,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("We're connected and in a room!");
         SpawnPlayer();
-
-        gameManager.JoinedRoom();
     }
 
     private void SpawnPlayer()
