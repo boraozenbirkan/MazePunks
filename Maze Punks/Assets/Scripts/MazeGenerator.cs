@@ -2,16 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class MazeGenerator : MonoBehaviour
+public class MazeGenerator : MonoBehaviourPunCallbacks
 {
     [SerializeField] MazeCell cellPrefab;
+    [SerializeField] Transform mazeTransform;
     [SerializeField] int mazeLenght, mazeHeight;
+    [SerializeField] GameObject[] mazeArray;
 
     MazeCell[,] mazeGrid;
-    
+    int mazeNumber = 0;
+
+    PhotonView photonView;
+    GameObject objToSpawn;
+
+    private void Awake()
+    {
+        photonView = GetComponent<PhotonView>();
+    }
+
     void Start()
     {
+        /*  Maze Generation code. NOT USING FOR THIS DEMO !!!
+         * 
         mazeGrid = new MazeCell[mazeLenght, mazeHeight];
 
         for (int x = 0; x < mazeLenght; x++)
@@ -19,12 +34,13 @@ public class MazeGenerator : MonoBehaviour
             for (int y = 0; y < mazeHeight; y++)
             {
                 MazeCell newCell = Instantiate(cellPrefab, new Vector3(x, y, 0), Quaternion.identity);
-                newCell.transform.SetParent(transform);
+                newCell.transform.SetParent(mazeTransform);
                 mazeGrid[x, y] = newCell;
             }
         }
 
         GenerateMaze(null, mazeGrid[0, 0]);
+        */
     }
 
     void GenerateMaze(MazeCell previousCell, MazeCell currenCell)
@@ -120,4 +136,31 @@ public class MazeGenerator : MonoBehaviour
         }
     }
 
+    public override void OnJoinedRoom()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            mazeNumber = Random.Range(0, mazeArray.Length);
+
+            mazeArray[mazeNumber].SetActive(true);
+        }
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        Debug.LogError("A player connected!");
+        // When a player connects, master shares the maze with them.
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Debug.LogError("I'm the master, sharing the maze number: " + mazeNumber);
+            photonView.RPC("ShareMaze", RpcTarget.Others, mazeNumber);
+        }
+    }
+
+    [PunRPC]
+    public void ShareMaze(int mazeNumber)
+    {
+        Debug.LogError("I got the maze! Maze Number: " + mazeNumber);
+        mazeArray[mazeNumber].SetActive(true);
+    }
 }
