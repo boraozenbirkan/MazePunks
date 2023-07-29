@@ -16,6 +16,8 @@ public class Manager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject findingCanvas;
     [SerializeField] GameObject waitingCanvas;
     [SerializeField] GameObject connectingCanvas;
+    [SerializeField] GameObject winnerCanvas;
+    [SerializeField] GameObject loserCanvas;
 
     [Header("Objects")]
     [SerializeField] GameObject setNicknamePanel;
@@ -25,12 +27,15 @@ public class Manager : MonoBehaviourPunCallbacks
     public bool gameStarted { get; private set; }
     int currentPlayerCount = 0;
     int maxPlayerCount = 0;
+    string sayMyName = "";
 
+    PhotonView photonView;
     NetworkManager networkManager;
 
     void Start()
     {
         networkManager = FindObjectOfType<NetworkManager>();
+        photonView = GetComponent<PhotonView>();
 
         connectingCanvas.SetActive(true);
 
@@ -45,6 +50,7 @@ public class Manager : MonoBehaviourPunCallbacks
             setNicknamePanel.SetActive(true);
             findMazeButton.SetActive(false);
         }
+
     }
 
     // Update is called once per frame
@@ -64,6 +70,11 @@ public class Manager : MonoBehaviourPunCallbacks
                 gameStarted = true;
                 waitingCanvas.SetActive(false);
             }
+            else
+            {
+                findingCanvas.SetActive(false);
+                waitingCanvas.SetActive(true);
+            }
         }
     }
 
@@ -77,6 +88,7 @@ public class Manager : MonoBehaviourPunCallbacks
     {
         findingCanvas.SetActive(false);
         waitingCanvas.SetActive(true);
+        gameStarted = false;
     }
 
     public void Btn_SetNickname()
@@ -99,5 +111,80 @@ public class Manager : MonoBehaviourPunCallbacks
         findingCanvas.SetActive(true);
 
         networkManager.FindMaze();
+    }
+
+    public void Btn_BackToMenu()
+    {
+        winnerCanvas.SetActive(false);
+        loserCanvas.SetActive(false);
+
+        // Reconnect
+        StartCoroutine(CheckNetworkConnectionOnDelay());
+    }
+
+    IEnumerator CheckNetworkConnectionOnDelay()
+    {
+        Debug.Log("Checking network connection...");
+
+        // First wait for disconection to avoid double CCU
+        while (PhotonNetwork.IsConnected)
+        {
+            Debug.Log("Waiting to disconnect!");
+            yield return new WaitForSeconds(1f);
+        }
+
+        // Then connect again
+        while (!PhotonNetwork.IsConnectedAndReady)
+        {
+            if (!PhotonNetwork.IsConnected) Debug.LogWarning("Player is not connected!");
+            else Debug.LogWarning("Player is connected BUT NOT READY!");
+
+            Debug.Log("Re-Connecting to server...");
+            PhotonNetwork.ConnectUsingSettings();
+
+            yield return new WaitForSeconds(2f);
+        }
+
+        // If player is connected and ready, then open the menu
+        Debug.Log("Now player is connected AND ready!");
+        menuCanvas.SetActive(true);
+    }
+
+
+    public void GotReward(string sayMyName)
+    {
+        Debug.LogError("I GOT THE REWARD !!!");
+        this.sayMyName = sayMyName;
+
+        photonView.RPC("DeclaredWinner", RpcTarget.All, sayMyName);
+    }
+
+    [PunRPC]
+    public void DeclaredWinner(string winnerName)
+    {
+        Debug.LogError("We have a winner: " + winnerName);
+        
+        // If we are the winner, open winner page
+        if (winnerName == sayMyName)
+        {
+            winnerCanvas.SetActive(true);
+        }
+        else { loserCanvas.SetActive(true); }
+
+        currentPlayerCount = 0;
+        sayMyName = "";
+        gameStarted = false;
+        FindObjectOfType<MazeGenerator>().CloseMaze();
+
+        StartCoroutine(DisconnectOnDelay());
+    }
+
+    IEnumerator DisconnectOnDelay()
+    {
+        PlayerController[] players = FindObjectsOfType<PlayerController>();
+        foreach (PlayerController player in players) { Destroy(player); }
+
+        yield return new WaitForSeconds(2f);
+        PhotonNetwork.Disconnect();
     }
 }

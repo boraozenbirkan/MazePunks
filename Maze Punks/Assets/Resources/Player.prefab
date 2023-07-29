@@ -130,7 +130,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
-  damping: 1
   nicknameText: {fileID: 1737876376814998331}
 --- !u!212 &1737876375936912845
 SpriteRenderer:

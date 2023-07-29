@@ -11,6 +11,7 @@ public class MazeGenerator : MonoBehaviourPunCallbacks
     [SerializeField] Transform mazeTransform;
     [SerializeField] int mazeLenght, mazeHeight;
     [SerializeField] GameObject[] mazeArray;
+    [SerializeField] GameObject reward;
 
     MazeCell[,] mazeGrid;
     int mazeNumber = 0;
@@ -143,7 +144,14 @@ public class MazeGenerator : MonoBehaviourPunCallbacks
             mazeNumber = Random.Range(0, mazeArray.Length);
 
             mazeArray[mazeNumber].SetActive(true);
+            reward.SetActive(true);
         }
+    }
+
+    public void CloseMaze()
+    {
+        mazeArray[mazeNumber].SetActive(false);
+        reward.SetActive(false);
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -161,6 +169,8 @@ public class MazeGenerator : MonoBehaviourPunCallbacks
     public void ShareMaze(int mazeNumber)
     {
         Debug.LogError("I got the maze! Maze Number: " + mazeNumber);
+        this.mazeNumber = mazeNumber;
         mazeArray[mazeNumber].SetActive(true);
+        reward.SetActive(true);
     }
 }
