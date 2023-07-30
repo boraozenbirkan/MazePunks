@@ -8,6 +8,7 @@ public class Manager : MonoBehaviourPunCallbacks
 {
     [SerializeField] TMP_InputField nicknameInput;
     [SerializeField] TextMeshProUGUI waitingText;
+    [SerializeField] TextMeshProUGUI balanceText;
     [SerializeField] int DEBUG_exPlayer;
 
     [Header("Canvases")]
@@ -31,10 +32,12 @@ public class Manager : MonoBehaviourPunCallbacks
 
     PhotonView photonView;
     NetworkManager networkManager;
+    BlockchainManager bcManager;
 
     void Start()
     {
         networkManager = FindObjectOfType<NetworkManager>();
+        bcManager = FindObjectOfType<BlockchainManager>();
         photonView = GetComponent<PhotonView>();
 
         connectingCanvas.SetActive(true);
@@ -110,7 +113,8 @@ public class Manager : MonoBehaviourPunCallbacks
         menuCanvas.SetActive(false);
         findingCanvas.SetActive(true);
 
-        networkManager.FindMaze();
+        if (bcManager.punkBalance > 0) networkManager.FindMaze();
+        else balanceText.text = "You don't have any Punk to play!";
     }
 
     public void Btn_BackToMenu()
@@ -150,6 +154,11 @@ public class Manager : MonoBehaviourPunCallbacks
         menuCanvas.SetActive(true);
     }
 
+    public void OnBalanceReturn(int balance)
+    {
+        if (balance > 0) balanceText.text = "Punk Balance: " + balance.ToString();
+        else balanceText.text = "You don't have any Punk to play!";
+    }
 
     public void GotReward(string sayMyName)
     {
