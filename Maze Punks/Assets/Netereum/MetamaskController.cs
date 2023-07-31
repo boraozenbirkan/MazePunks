@@ -7,7 +7,6 @@ using UnityEngine.UIElements;
 using System;
 using Nethereum.Hex.HexTypes;
 using System.Numerics;
-using ERC721ContractLibrary.Contracts.ERC721PresetMinterPauserAutoId.ContractDefinition;
 using Nethereum.Unity.Metamask;
 using Nethereum.Unity.Contracts;
 using Nethereum.Contracts;
@@ -68,6 +67,8 @@ public class MetamaskController : MonoBehaviour
 
     public IEnumerator MintNFT()
     {
+        yield return null;
+        /*
         var contractTransactionUnityRequest = GetContractTransactionUnityRequest();
 
         if (contractTransactionUnityRequest != null)
@@ -85,6 +86,7 @@ public class MetamaskController : MonoBehaviour
             }
             
         }
+        */
     }
 
     public IEnumerator GetAllNFTImages()
@@ -136,6 +138,8 @@ public class MetamaskController : MonoBehaviour
 
     private IEnumerator DeploySmartContract()
     {
+        yield return null;
+        /*
         var contractTransactionUnityRequest = GetContractTransactionUnityRequest();
 
         if (contractTransactionUnityRequest != null)
@@ -159,7 +163,7 @@ public class MetamaskController : MonoBehaviour
             }
 
         }
-    
+    */
     }
 
 

@@ -11,13 +11,11 @@ using Nethereum.Unity.Rpc;  // for GetUnityRpcRequestClientFactory
 using Nethereum.Hex.HexTypes;
 
 
-using ContractDefinitions.Contracts.testToken.ContractDefinition;
-using ContractDefinitions.Contracts.testNFT.ContractDefinition;
-using ContractDefinitions.Contracts.testItem.ContractDefinition;
 using Nethereum.RPC.HostWallet;
 
 public class NeterumTest : MonoBehaviour
 {
+    /*
     public TMPro.TextMeshProUGUI addressText;
     public TMPro.TextMeshProUGUI tokenBalanceText;
     public TMPro.TextMeshProUGUI nftBalanceText;
@@ -47,7 +45,7 @@ public class NeterumTest : MonoBehaviour
         - Always give much higer (like 10x) allowance when you increase compared to when you check allowance.
     Because, it doesn't give perfect number, gives less. Makes you increase it twice!
      
-     */
+     
 
     // Start is called before the first frame update
     void Start()
@@ -360,7 +358,7 @@ public class NeterumTest : MonoBehaviour
             mintItemButtonText.text = "Approve";
         else
             mintItemButtonText.text = "Mint Item";
-        */
+        
     }
 
     private IEnumerator AddAvalanche()
@@ -451,4 +449,6 @@ public class NeterumTest : MonoBehaviour
     // Conversion Tools
     private static BigInteger ToWei(double value) { return (BigInteger)(value * Math.Pow(10, 18)); }
     private static double FromWei(BigInteger value) { return ((double)value / Math.Pow(10, 18)); }
+
+    */
 }

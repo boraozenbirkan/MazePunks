@@ -55,7 +55,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         // Set the max player
         RoomOptions roomOptions = new RoomOptions();
-        roomOptions.MaxPlayers = (byte)3;
+        roomOptions.MaxPlayers = (byte)2;
 
         // Set random room name
         string roomName = "Room_" + Random.Range(0, 100000);
