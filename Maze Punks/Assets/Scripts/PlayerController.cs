@@ -55,6 +55,8 @@ public class PlayerController : MonoBehaviour
         // Move the object
         rb.velocity = movement * moveSpeed;
 
+        #region DEBUG MOVE
+        /*  
         if (Input.GetMouseButtonDown(0))
         {
             // Get the mouse position in world coordinates
@@ -64,6 +66,8 @@ public class PlayerController : MonoBehaviour
             // Move the object instantly to the mouse click position
             transform.position = targetPosition;
         }
+        */
+        #endregion
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

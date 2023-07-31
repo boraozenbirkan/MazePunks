@@ -8,6 +8,8 @@ public class Manager : MonoBehaviourPunCallbacks
 {
     [SerializeField] TMP_InputField nicknameInput;
     [SerializeField] TextMeshProUGUI waitingText;
+    [SerializeField] TextMeshProUGUI nicknameText;
+    [SerializeField] TextMeshProUGUI balanceText;
     [SerializeField] int DEBUG_exPlayer;
 
     [Header("Canvases")]
@@ -29,12 +31,17 @@ public class Manager : MonoBehaviourPunCallbacks
     int maxPlayerCount = 0;
     string sayMyName = "";
 
+    bool connected;
+    bool receivedPunks;
+
     PhotonView photonView;
     NetworkManager networkManager;
+    BlockchainManager bcManager;
 
     void Start()
     {
         networkManager = FindObjectOfType<NetworkManager>();
+        bcManager = FindObjectOfType<BlockchainManager>();
         photonView = GetComponent<PhotonView>();
 
         connectingCanvas.SetActive(true);
@@ -44,6 +51,7 @@ public class Manager : MonoBehaviourPunCallbacks
         {
             setNicknamePanel.SetActive(false);
             findMazeButton.SetActive(true);
+            nicknameText.text = PlayerPrefs.GetString("Nickname");
         }
         else
         {
@@ -80,8 +88,13 @@ public class Manager : MonoBehaviourPunCallbacks
 
     public override void OnConnected()
     {
-        connectingCanvas.SetActive(false);
-        menuCanvas.SetActive(true);
+        connected = true;
+
+        if (receivedPunks && connected)
+        {
+            connectingCanvas.SetActive(false);
+            menuCanvas.SetActive(true);
+        }
     }
 
     public override void OnJoinedRoom()
@@ -96,6 +109,8 @@ public class Manager : MonoBehaviourPunCallbacks
         if (nicknameInput.text.Length == 0) return;
 
         PlayerPrefs.SetString("Nickname", nicknameInput.text);
+        nicknameText.text = nicknameInput.text;
+
         setNicknamePanel.SetActive(false);
         findMazeButton.SetActive(true);
     }
@@ -107,10 +122,13 @@ public class Manager : MonoBehaviourPunCallbacks
 
     public void Btn_FindMaze()
     {
-        menuCanvas.SetActive(false);
-        findingCanvas.SetActive(true);
-
-        networkManager.FindMaze();
+        if (bcManager.punkBalance > 0)
+        {
+            menuCanvas.SetActive(false);
+            findingCanvas.SetActive(true);
+            networkManager.FindMaze();
+        }
+        else balanceText.text = "<#FF0000>You don't have any Punk to play!";
     }
 
     public void Btn_BackToMenu()
@@ -150,6 +168,19 @@ public class Manager : MonoBehaviourPunCallbacks
         menuCanvas.SetActive(true);
     }
 
+    public void OnBalanceReturn(int balance)
+    {
+        if (balance > 0) balanceText.text = "Punk Balance: " + balance.ToString();
+        else balanceText.text = "You don't have any Punk to play!";
+
+        receivedPunks = true;
+
+        if (receivedPunks && connected)
+        {
+            connectingCanvas.SetActive(false);
+            menuCanvas.SetActive(true);
+        }
+    }
 
     public void GotReward(string sayMyName)
     {
